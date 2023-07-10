@@ -1,4 +1,4 @@
-package com.github.oc.mongodbjava8.persistence;
+package com.github.oc.msspringmongodb.persistence;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

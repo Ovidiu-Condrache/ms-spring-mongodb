@@ -1,4 +1,4 @@
-package com.github.oc.mongodbjava8.persistence;
+package com.github.oc.msspringmongodb.persistence;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -1,10 +1,10 @@
-package com.github.oc.mongodbjava8;
+package com.github.oc.msspringmongodb;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MongodbJava8ApplicationTests {
+class SpringMongodbApplicationTests {
 
 	@Test
 	void contextLoads() {
