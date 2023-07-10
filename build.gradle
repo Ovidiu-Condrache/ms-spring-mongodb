@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.13'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'io.freefair.lombok' version '8.1.0'
+}
+
+group = 'com.github.oc'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '1.8'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+}
+
+configurations {
+	integrationTestImplementation.extendsFrom implementation
+}
+
+testing {
+	suites {
+		configureEach {
+			dependencies {
+				implementation 'org.springframework.boot:spring-boot-starter-test'
+			}
+		}
+		test {
+			useJUnitJupiter()
+		}
+		integrationTest(JvmTestSuite) {
+			dependencies {
+				implementation project()
+				implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
+			}
+			targets {
+				configureEach {
+					testTask.configure {
+						shouldRunAfter(test)
+					}
+				}
+			}
+		}
+	}
+}
+
+tasks.named('check') {
+	dependsOn(testing.suites.integrationTest)
+}
