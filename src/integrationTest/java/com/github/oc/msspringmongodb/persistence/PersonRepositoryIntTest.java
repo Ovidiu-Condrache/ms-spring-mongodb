@@ -131,7 +131,7 @@ public class PersonRepositoryIntTest {
 
     @Nested
     @EnabledIf(expression = "#{'${ms.scenario}' == '5'}", loadContext = true)
-    class Scenario6 {
+    class Scenario5 {
 
         @Test
         @EnabledOnJre(JRE.JAVA_17)
