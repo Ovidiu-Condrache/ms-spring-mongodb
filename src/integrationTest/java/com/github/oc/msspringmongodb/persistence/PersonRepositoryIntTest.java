@@ -129,7 +129,6 @@ public class PersonRepositoryIntTest {
         }
     }
 
-    // Add Date Provider for this scenario.
     @Nested
     @EnabledIf(expression = "#{'${ms.scenario}' == '6'}", loadContext = true)
     class Scenario6 {
