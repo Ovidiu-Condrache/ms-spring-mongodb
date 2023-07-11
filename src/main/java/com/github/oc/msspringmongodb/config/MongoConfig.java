@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @Configuration
 @EnableMongoAuditing
-@ConditionalOnExpression("#{'${ms.scenario}' == '3' || '${ms.scenario}' == '5'}")
+@ConditionalOnExpression("#{'${ms.scenario}' == '3'}")
 public class MongoConfig {
 }

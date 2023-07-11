@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Configuration
 @EnableMongoAuditing(dateTimeProviderRef = "truncatedDateTimeProvider")
-@ConditionalOnExpression("#{'${ms.scenario}' == '6'}")
+@ConditionalOnExpression("#{'${ms.scenario}' == '5'}")
 public class DateTimeProviderConfig {
 
     @Bean(name = "truncatedDateTimeProvider")
