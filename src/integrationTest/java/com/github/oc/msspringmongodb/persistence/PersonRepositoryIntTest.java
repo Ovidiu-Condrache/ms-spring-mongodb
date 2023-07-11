@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.opentest4j.AssertionFailedError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
@@ -21,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
@@ -68,7 +70,14 @@ public class PersonRepositoryIntTest {
         @Test
         @EnabledOnJre(JRE.JAVA_17)
         void saveWithFirstNameLastNameArchivedDateShouldFailOnJava17() {
-            savePersonTest();
+            AssertionFailedError thrown = assertThrows(AssertionFailedError.class, PersonRepositoryIntTest.this::savePersonTest);
+            System.err.println(thrown.getMessage());
+        }
+
+        @Test
+        @EnabledOnJre(JRE.JAVA_17)
+        void saveWithFirstNameLastNameArchivedDateShouldSucceedOnJava17ByIgnoring() {
+            savePersonTest("archivedDate");
         }
     }
 
@@ -85,7 +94,14 @@ public class PersonRepositoryIntTest {
         @Test
         @EnabledOnJre(JRE.JAVA_17)
         void saveWithAllFieldsShouldFailOnJava17() {
-            savePersonTest();
+            AssertionFailedError thrown = assertThrows(AssertionFailedError.class, PersonRepositoryIntTest.this::savePersonTest);
+            System.err.println(thrown.getMessage());
+        }
+
+        @Test
+        @EnabledOnJre(JRE.JAVA_17)
+        void saveWithAllFieldsShouldSucceedOnJava17ByIgnoring() {
+            savePersonTest("archivedDate", "createdDate", "lastModifiedDate");
         }
     }
 
@@ -102,24 +118,8 @@ public class PersonRepositoryIntTest {
         @Test
         @EnabledOnJre(JRE.JAVA_17)
         void updateArchivedDateShouldFailOnJava17() {
-            updatePersonTest();
-        }
-    }
-
-    @Nested
-    @EnabledIf(expression = "#{'${ms.scenario}' == '5'}", loadContext = true)
-    class Scenario5 {
-
-        @Test
-        @EnabledOnJre(JRE.JAVA_17)
-        void saveWithFirstNameLastNameArchivedDateShouldSucceedOnJava17ByIgnoring() {
-            savePersonTest("archivedDate");
-        }
-
-        @Test
-        @EnabledOnJre(JRE.JAVA_17)
-        void saveWithAllFieldsShouldSucceedOnJava17ByIgnoring() {
-            savePersonTest("archivedDate", "createdDate", "lastModifiedDate");
+            AssertionFailedError thrown = assertThrows(AssertionFailedError.class, PersonRepositoryIntTest.this::updatePersonTest);
+            System.err.println(thrown.getMessage());
         }
 
         @Test
@@ -130,8 +130,8 @@ public class PersonRepositoryIntTest {
     }
 
     @Nested
-    @EnabledIf(expression = "#{'${ms.scenario}' == '6'}", loadContext = true)
-    class Scenario6 {
+    @EnabledIf(expression = "#{'${ms.scenario}' == '5'}", loadContext = true)
+    class Scenario5 {
 
         @Test
         @EnabledOnJre(JRE.JAVA_17)
@@ -163,13 +163,14 @@ public class PersonRepositoryIntTest {
         List<Person> persons = personRepository.findAll();
 
         assertThat(persons.size()).isOne();
-        assertThat(persons.get(0)).isEqualTo(person);
 
-        if (scenario == 5) {
+        if (ignoredFields.length > 0) {
             assertThat(persons.get(0))
                     .usingRecursiveComparison(RecursiveComparisonConfiguration.builder()
                             .withIgnoredFields(ignoredFields).build())
                     .isEqualTo(person);
+        } else {
+            assertThat(persons.get(0)).isEqualTo(person);
         }
     }
 
@@ -187,13 +188,14 @@ public class PersonRepositoryIntTest {
         List<Person> persons = personRepository.findAll();
 
         assertThat(persons.size()).isOne();
-        assertThat(persons.get(0)).isEqualTo(personToUpdate);
 
-        if (scenario == 5) {
+        if (ignoredFields.length > 0) {
             assertThat(persons.get(0))
                     .usingRecursiveComparison(RecursiveComparisonConfiguration.builder()
                             .withIgnoredFields(ignoredFields).build())
                     .isEqualTo(personToUpdate);
+        } else {
+            assertThat(persons.get(0)).isEqualTo(personToUpdate);
         }
     }
 
@@ -206,10 +208,9 @@ public class PersonRepositoryIntTest {
             case 2:
             case 3:
             case 4:
-            case 5:
                 return Instant.now();
 
-            case 6:
+            case 5:
                 return Instant.now().truncatedTo(ChronoUnit.MILLIS);
         }
     }
